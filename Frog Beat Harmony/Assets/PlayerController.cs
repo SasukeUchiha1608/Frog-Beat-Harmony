@@ -17,6 +17,7 @@ public class PlayerController : MonoBehaviour
 
     void Update()
     {
+        // User Input
         if (Input.GetKeyDown(KeyCode.W))
         {
             Debug.Log("W Key Pressed");
@@ -42,5 +43,12 @@ public class PlayerController : MonoBehaviour
         targetPosition.y = yPosition;
 
         transform.position = Vector3.MoveTowards(transform.position, targetPosition, moveSpeed * Time.deltaTime);
+
+        // Enemy Collision
+        /*
+        * When frog colides with Enemy, game ends/loses a health
+        * Does the enemy dissapear?
+        * 
+        */
     }
 }
