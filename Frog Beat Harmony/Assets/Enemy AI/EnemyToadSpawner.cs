@@ -6,6 +6,9 @@ public class EnemyToadSpawner : MonoBehaviour
 {
     // Spawn area Variables
     public GameObject TheEnemy;
+    public GameObject TheHeart;
+    public float boardX = 10;
+    public float boardZ = 10;
     public float spawnXmin = 9;
     public float spawnZmin = 1;
     public float spawnXmax = 11;
@@ -14,12 +17,15 @@ public class EnemyToadSpawner : MonoBehaviour
     private float xPos;
     private float zPos;
 
+    // possiable to make this code spawn in the orbs too?
+
     // Enemy control
     public int maxEnemies = 5;
     private int capEnemies = 5;
     private int totalEnemies = 0;
     private int set = 2;
     private EnemyAI eAI;
+    private int enemyID = 0;
 
     // Spawn timer control
     public float spawnTime = 6f;
@@ -29,7 +35,7 @@ public class EnemyToadSpawner : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        //eAI = GetComponent<EnemyAI>();
+        eAI = GetComponent<EnemyAI>();
     }
 
     // Update is called once per frame
@@ -42,9 +48,18 @@ public class EnemyToadSpawner : MonoBehaviour
             {
                 xPos = Random.Range(spawnXmin, spawnXmax);
                 zPos = Random.Range(spawnZmin, spawnZmax);
+
                 Instantiate(TheEnemy, new Vector3(xPos, 1, zPos), Quaternion.identity);
-                set += 1;
+                enemyID += 1;
                 totalEnemies += 1;
+                
+                //spawns in the orb that destroys the enemy.
+                // possiable to set every X enemies defeated does damage to the boss
+                xPos = Random.Range(0, boardX+1);
+                zPos = Random.Range(0, boardZ+1);
+                Instantiate(TheHeart, new Vector3(xPos, 1, zPos), Quaternion.identity);
+
+                set += 1;
             }   
             counter = 0;
             set = 0;
@@ -55,7 +70,7 @@ public class EnemyToadSpawner : MonoBehaviour
                 this.spawn = !this.spawn;
         }
 
-        /*
+        /**
         if(dificulty ramp value) 
         {
             TempoUp(); //increaces the speed of the enemy toads
@@ -64,6 +79,11 @@ public class EnemyToadSpawner : MonoBehaviour
                 capEnemies += 1;
         }
         /**/
+    }
+
+    public int getID() 
+    {
+        return enemyID++;
     }
 
     // Updates when an enemy dies

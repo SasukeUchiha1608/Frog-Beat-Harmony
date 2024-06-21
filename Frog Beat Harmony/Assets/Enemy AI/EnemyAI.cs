@@ -12,14 +12,19 @@ public class EnemyAI : MonoBehaviour
     // simple pathfinding to player
     private float eX;
     private float eZ;
-    enum _direction {left, right, forward, back, stop};
+    enum _direction {left, back, right, forward};
     private _direction direct;
+    private float tiltY = 0f;
+    private float rotation = 90f;
+
+    private int ID;
 
     // movement
     private float distance;
     private GridManager gridManager;
     private EnemyToadSpawner ToadSpawner;
     private Vector3 targetPosition;
+    private Quaternion targetRotation;
     private float yPosition;
     private bool AutoMove = true;
 
@@ -30,10 +35,12 @@ public class EnemyAI : MonoBehaviour
     void Start()
     {
         gridManager = FindFirstObjectByType<GridManager>();
-        ToadSpawner = GetComponent<EnemyToadSpawner>();
         targetPosition = gridManager.GetNearestPointOnGrid(transform.position);
         transform.position = targetPosition;
         yPosition = transform.position.y; // Store the initial Y position
+
+        ToadSpawner = GetComponent<EnemyToadSpawner>();
+        ID = ToadSpawner.getID();
     }
     
     // Update is called once per frame
@@ -66,31 +73,35 @@ public class EnemyAI : MonoBehaviour
                 else
                     direct = _direction.back;
 
-
             //make the moddle rotate, then confirm direction?
             switch(direct) {
                 case _direction.left:
+                    tiltY = rotation*2f;
                     targetPosition += Vector3.left * gridManager.gridSize;
                     break;
                 case _direction.right:
+                    tiltY = rotation*0f;
                     targetPosition += Vector3.right * gridManager.gridSize;
                     break;
                 case _direction.forward:
+                    tiltY = rotation*1f;
                     targetPosition += Vector3.forward * gridManager.gridSize;
                     break;
                 case _direction.back:
+                    tiltY = rotation*-1f;
                     targetPosition += Vector3.back * gridManager.gridSize;
                     break;
                 default:
                     break;
             }
-
+            targetRotation = Quaternion.Euler(0, tiltY, 0);
             targetPosition.y = yPosition;
             
             test = 0;
             this.AutoMove = !this.AutoMove;
         }
         else {
+            transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation,  Time.deltaTime * moveSpeed * 2);
             transform.position = Vector3.MoveTowards(transform.position, targetPosition, moveSpeed * Time.deltaTime);
             test += Time.deltaTime;
             if(test > tempo) 
@@ -113,12 +124,17 @@ public class EnemyAI : MonoBehaviour
 
     }
 
+    int getID() 
+    {
+        return ID;
+    }
+
     // Destroy enemy method
     /**
     void OnCollisionEnter (Collision col)
     {
-        if(col.GameObject.tag.Equals ("player"))
-            Destroy(this.GameObject);
+        // if tag enemy, turn.
+        // if tag player, destroy.
     }
     /**/
 }
