@@ -6,6 +6,12 @@ public class PlayerController : MonoBehaviour
     private GridManager gridManager;
     private Vector3 targetPosition;
     private float yPosition;
+    private int direction = 0;
+
+    public int HP = 3;
+    private bool invinciable = false;
+    private float counter = 0f;
+    public float invinciableTimer = 3f;
 
     void Start()
     {
@@ -22,35 +28,53 @@ public class PlayerController : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.W))
         {
             Debug.Log("W Key Pressed");
+            direction = 1;
             targetPosition += Vector3.forward * gridManager.gridSize;
         }
         if (Input.GetKeyDown(KeyCode.S))
         {
             Debug.Log("S Key Pressed");
+            direction = 2;
             targetPosition += Vector3.back * gridManager.gridSize;
         }
         if (Input.GetKeyDown(KeyCode.A))
         {
             Debug.Log("A Key Pressed");
+            direction = 3;
             targetPosition += Vector3.left * gridManager.gridSize;
         }
         if (Input.GetKeyDown(KeyCode.D))
         {
             Debug.Log("D Key Pressed");
+            direction = 4;
             targetPosition += Vector3.right * gridManager.gridSize;
         }
+
+        if(invinciable) {
+            if(counter < invinciableTimer) {
+                counter += Time.deltatime;
+            } else {
+                invinciable = false;
+                counter = 0f;
+            }
+        } 
 
         // Ensure the Y coordinate is locked
         targetPosition.y = yPosition;
 
         transform.position = Vector3.MoveTowards(transform.position, targetPosition, moveSpeed * Time.deltaTime);
-
-        // Enemy Collision
-        /*
-        * When frog colides with Enemy, game ends/loses a health
-        * Does the enemy dissapear?
-        * 
-        */
     }
+
+    public int facingDirection() {
+        return direction;
+    }
+    /**
+    private void oncollisionenter(collision col){
+        if ((col.tag == "enemy") && !invinciable) {
+            HP -= 1;
+            scatter = true
+        }
+    }
+    /**/
 
 }

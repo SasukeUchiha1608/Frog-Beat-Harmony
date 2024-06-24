@@ -11,7 +11,6 @@ public class EnemyToadSpawner : MonoBehaviour
     public GameObject Toad_Buzz; // patrolls a route. follows the player if close, returns to closest node of route if player escapes
     public GameObject Toad_Clatter; // Always tries to be near the orb
     public GameObject TheHeart;
-    private bool[] loaded = new bool[5];
     public float boardX = 10;
     public float boardZ = 10;
     public float spawnXmin = 9;
@@ -29,9 +28,6 @@ public class EnemyToadSpawner : MonoBehaviour
     private int capEnemies = 2;
     private int totalEnemies = 0;
     private int set = 2;
-    private EnemyAI eAI;
-    private int enemyID = 0;
-    private bool scatter = false;
 
 
     // Spawn timer control
@@ -42,11 +38,11 @@ public class EnemyToadSpawner : MonoBehaviour
     private bool toadSpawn = true;
     private bool orbSpawn = false;
     private bool orbExists = false;
+    private bool scatter;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        eAI = GetComponent<EnemyAI>();
         xPos = Random.Range(spawnXmin, spawnXmax);
         zPos = Random.Range(spawnZmin, spawnZmax);
 
@@ -56,8 +52,6 @@ public class EnemyToadSpawner : MonoBehaviour
         zPos = Random.Range(spawnZmin, spawnZmax);
 
         Instantiate(Toad_Pinky, new Vector3(xPos, 1, zPos), Quaternion.identity);
-        loaded[0] = true;
-        loaded[1] = true;
     }
 
     // Update is called once per frame
@@ -87,6 +81,7 @@ public class EnemyToadSpawner : MonoBehaviour
             if(counter > orbCooldown)
                 orbSpawn = !orbSpawn;
         }
+
         /**
         if(dificulty ramp value) 
         {
@@ -100,28 +95,14 @@ public class EnemyToadSpawner : MonoBehaviour
         /**/
     }
 
+    public bool scatterMode() {
+        return scatter;
+    }
+
     public void orbCollected() {
         orbExists = false;
-        for(int i = 0; i < 5; i++) {
-            if(loaded[i]){
-                switch(i) {
-                    case 0:
-                        Toad_Blinky.EnemyAI.scatterMode = true;
-                        break;
-                    case 1:
-                        // Toad_Pinky.scatterMode = true;
-                        break;
-                    case 2:
-                        // Toad_Clyde.scatterMode = true;
-                        break;
-                    case 3:
-                        break;
-                    case 4:
-
-                        break;
-                }
-            }
-        }
+        scatter = true;
+        
         // set all toads to scatter
         // tick up collection
     }
