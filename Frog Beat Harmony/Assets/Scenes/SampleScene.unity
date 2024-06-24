@@ -148,7 +148,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   TheEnemy: {fileID: 301516484}
-  TheHeart: {fileID: 919132149155446097, guid: fbee2e7b18404bf4a8a93fd6c91e97df, type: 3}
+  TheHeart: {fileID: 8949169384107478486, guid: daf13ee1822889144ba30c4e93e64ea9, type: 3}
   boardX: 10
   boardZ: 10
   spawnXmin: 9
@@ -156,6 +156,7 @@ MonoBehaviour:
   spawnXmax: 11
   spawnZmax: 10
   maxEnemies: 5
+  ramp: 0.1
   spawnTime: 5
 --- !u!4 &92370783
 Transform:

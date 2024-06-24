@@ -8,61 +8,45 @@ public class EnemyAI : MonoBehaviour
     public GameObject player;
     public float moveSpeed = 5.0f;
     public float tempo = 1f;
+    public float scatter = 10f;
 
     // simple pathfinding to player
-    private float eX;
-    private float eZ;
-    enum _direction {left, back, right, forward};
-    private _direction direct;
-    private float tiltY = 0f;
-    private float rotation = 90f;
-
-    private int ID;
+    public float eX;
+    public float eZ;
+    public enum _direction {left, back, right, forward};
+    public _direction direct;
+    public float tiltY = 0f;
+    public float rotation = 90f;
 
     // movement
-    private float distance;
-    private GridManager gridManager;
-    private EnemyToadSpawner ToadSpawner;
-    private Vector3 targetPosition;
-    private Quaternion targetRotation;
-    private float yPosition;
-    private bool AutoMove = true;
+    public float distance;
+    public GridManager gridManager;
+    public Vector3 targetPosition;
+    public Quaternion targetRotation;
+    public float yPosition;
+    public bool AutoMove = true;
+    public bool scatterMode = false;
+    public float counterM = 0;
+    public float counterS = 0;
 
-    private float test = 0;
+    public float test = 0;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created   
 
-    void Start()
-    {
-        gridManager = FindFirstObjectByType<GridManager>();
-        targetPosition = gridManager.GetNearestPointOnGrid(transform.position);
-        transform.position = targetPosition;
-        yPosition = transform.position.y; // Store the initial Y position
-
-        ToadSpawner = GetComponent<EnemyToadSpawner>();
-        ID = ToadSpawner.getID();
-    }
-    
-    // Update is called once per frame
-    void Update() 
-    {
-        //Add in a method to check for surrounding enemies to prevent them from stacking later
-        /*
-        * Unsure what would be the best way to handle it
-        *   Have the enemy stall in place
-        *   They move in a diffrent direction?
-        * Detection
-        *   Should it be the enemy sends a collision in the direction they will move into and change if it colides into another box?
-        *   or allow the enemies to be spaced out
-        */
-
-        if(AutoMove) {
-            eX = transform.position.x - player.transform.position.x;
-            eZ = transform.position.z - player.transform.position.z;
-
-            // Searches for the player and moves closer
-            // Will need to add in obstical avoidence when we add them in. this will do for now
-            if (Mathf.Abs(eX) > Mathf.Abs(eZ))
+    public void direction() {
+        if(scatterMode) {
+            if (Mathf.Abs(eX) > Mathf.Abs(eZ)) // will move away from the player
+                    if(eX < 0)
+                        direct = _direction.left;
+                    else
+                        direct = _direction.right;
+                else
+                    if(eZ > 0)
+                        direct = _direction.forward;
+                    else
+                        direct = _direction.back;
+        } else {
+            if (Mathf.Abs(eX) > Mathf.Abs(eZ)) // chases the player
                 if(eX > 0)
                     direct = _direction.left;
                 else
@@ -72,46 +56,11 @@ public class EnemyAI : MonoBehaviour
                     direct = _direction.forward;
                 else
                     direct = _direction.back;
-
-            //make the moddle rotate, then confirm direction?
-            switch(direct) {
-                case _direction.left:
-                    tiltY = rotation*2f;
-                    targetPosition += Vector3.left * gridManager.gridSize;
-                    break;
-                case _direction.right:
-                    tiltY = rotation*0f;
-                    targetPosition += Vector3.right * gridManager.gridSize;
-                    break;
-                case _direction.forward:
-                    tiltY = rotation*1f;
-                    targetPosition += Vector3.forward * gridManager.gridSize;
-                    break;
-                case _direction.back:
-                    tiltY = rotation*-1f;
-                    targetPosition += Vector3.back * gridManager.gridSize;
-                    break;
-                default:
-                    break;
-            }
-            targetRotation = Quaternion.Euler(0, tiltY, 0);
-            targetPosition.y = yPosition;
-            
-            test = 0;
-            this.AutoMove = !this.AutoMove;
         }
-        else {
-            transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation,  Time.deltaTime * moveSpeed * 2);
-            transform.position = Vector3.MoveTowards(transform.position, targetPosition, moveSpeed * Time.deltaTime);
-            test += Time.deltaTime;
-            if(test > tempo) 
-                this.AutoMove = !this.AutoMove;
-        }
-
     }
 
     // Difficulty ramp
-    public void TempoUp() 
+    public void TempoUp(float ramp) 
     {
         /*
         * We ramp up the tempo the frogs move here
@@ -119,15 +68,19 @@ public class EnemyAI : MonoBehaviour
         * Figure out parameters how it should speed up
         * Speed cap?
         */
-        tempo -= 0.01f;
-        moveSpeed += 0.01f;
+        tempo -= ramp;
+        moveSpeed += ramp;
 
     }
 
-    int getID() 
-    {
-        return ID;
-    }
+    /*
+    * scatter
+    *   orb pick up
+    *   player hit
+    *   parry
+    * inky blinky pinky clyde
+    * 
+    */
 
     // Destroy enemy method
     /**

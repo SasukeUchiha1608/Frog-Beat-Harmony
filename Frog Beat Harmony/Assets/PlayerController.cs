@@ -18,6 +18,7 @@ public class PlayerController : MonoBehaviour
     void Update()
     {
         // User Input
+        // direction is needed for pinky's AI
         if (Input.GetKeyDown(KeyCode.W))
         {
             Debug.Log("W Key Pressed");
@@ -51,4 +52,5 @@ public class PlayerController : MonoBehaviour
         * 
         */
     }
+
 }
