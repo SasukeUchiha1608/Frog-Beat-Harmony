@@ -147,7 +147,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bbce300433b92bb4b9d58e0b2fa96584, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  TheEnemy: {fileID: 301516484}
+  Toad_Blinky: {fileID: 0}
+  Toad_Pinky: {fileID: 0}
+  Toad_Clyde: {fileID: 0}
+  Toad_Buzz: {fileID: 0}
+  Toad_Clatter: {fileID: 0}
   TheHeart: {fileID: 8949169384107478486, guid: daf13ee1822889144ba30c4e93e64ea9, type: 3}
   boardX: 10
   boardZ: 10
@@ -158,6 +162,7 @@ MonoBehaviour:
   maxEnemies: 5
   ramp: 0.1
   spawnTime: 5
+  orbCooldown: 10
 --- !u!4 &92370783
 Transform:
   m_ObjectHideFlags: 0
@@ -212,9 +217,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a1758626ddb23444698c076421983b0f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  player: {fileID: 423111798}
   moveSpeed: 5
-  tempo: 1
+  scatterTime: 10
+  direct: 0
+  gridManager: {fileID: 0}
+  targetPosition: {x: 0, y: 0, z: 0}
+  targetRotation: {x: 0, y: 0, z: 0, w: 0}
+  yPosition: 0
+  test: 0
 --- !u!136 &301516486
 CapsuleCollider:
   m_ObjectHideFlags: 0
@@ -764,6 +774,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   moveSpeed: 5
+  HP: 3
+  invinciableTimer: 3
 --- !u!1 &660524132
 GameObject:
   m_ObjectHideFlags: 0

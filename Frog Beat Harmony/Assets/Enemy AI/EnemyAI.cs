@@ -38,7 +38,7 @@ public class EnemyAI : MonoBehaviour
             else
                 direct = _direction.back;
 
-        switch(EnemyAI.direct) {
+        switch(direct) {
             case _direction.left:
                 tiltY = rotation*2f;
                 targetPosition += Vector3.left * gridManager.gridSize;
@@ -76,7 +76,7 @@ public class EnemyAI : MonoBehaviour
                 else
                     direct = _direction.back;
 
-        switch(EnemyAI.direct) {
+        switch(direct) {
             case _direction.left:
                 tiltY = rotation*2f;
                 targetPosition += Vector3.left * gridManager.gridSize;
@@ -99,6 +99,10 @@ public class EnemyAI : MonoBehaviour
 
         targetRotation = Quaternion.Euler(0, tiltY, 0);
         targetPosition.y = yPosition;
+    }
+
+    public float getMoveSpeed() {
+        return moveSpeed;
     }
 
 }

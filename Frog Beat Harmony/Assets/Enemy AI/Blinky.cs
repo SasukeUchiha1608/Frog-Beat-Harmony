@@ -8,7 +8,7 @@ public class Blinky : MonoBehaviour
 
     private float tempo = 1f;
     private float counterM = 0;
-    bool Automove = false;
+    bool AutoMove = true;
 
     private EnemyAI EnemyAI;
     private EnemyToadSpawner ETS;
@@ -16,7 +16,7 @@ public class Blinky : MonoBehaviour
     void Start()
     {
         EnemyAI = GetComponent<EnemyAI>();
-        ETS = GetComponent<EnemyAI>();
+        ETS = GetComponent<EnemyToadSpawner>();
         EnemyAI.gridManager = FindFirstObjectByType<GridManager>();
         EnemyAI.targetPosition = EnemyAI.gridManager.GetNearestPointOnGrid(transform.position);
         transform.position = EnemyAI.targetPosition;
@@ -38,10 +38,10 @@ public class Blinky : MonoBehaviour
             // Will need to add in obstical avoidence when we add them in. this will do for now
             
             counterM = 0;
-            EnemyAI.AutoMove = !EnemyAI.AutoMove;
+            AutoMove = !AutoMove;
         } else {
-            transform.rotation = Quaternion.Slerp(transform.rotation, EnemyAI.targetRotation,  Time.deltaTime * EnemyAI.moveSpeed * 2);
-            transform.position = Vector3.MoveTowards(transform.position, EnemyAI.targetPosition, EnemyAI.moveSpeed * Time.deltaTime);
+            transform.rotation = Quaternion.Slerp(transform.rotation, EnemyAI.targetRotation,  Time.deltaTime * EnemyAI.getMoveSpeed() * 2);
+            transform.position = Vector3.MoveTowards(transform.position, EnemyAI.targetPosition, EnemyAI.getMoveSpeed() * Time.deltaTime);
             counterM += Time.deltaTime;
             if(counterM > tempo) 
                 AutoMove = !AutoMove;
@@ -51,6 +51,5 @@ public class Blinky : MonoBehaviour
     public void TempoUp(float ramp) 
     {
         tempo -= ramp;
-        moveSpeed += ramp;
     }
 }

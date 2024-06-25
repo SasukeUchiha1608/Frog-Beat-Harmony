@@ -52,7 +52,7 @@ public class PlayerController : MonoBehaviour
 
         if(invinciable) {
             if(counter < invinciableTimer) {
-                counter += Time.deltatime;
+                counter += Time.deltaTime;
             } else {
                 invinciable = false;
                 counter = 0f;
