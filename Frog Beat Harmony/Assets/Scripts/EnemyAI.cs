@@ -16,7 +16,6 @@ public class EnemyAI : MonoBehaviour
     private float rotation = 90f;
 
     // movement
-    public GridManager gridManager;
     public Vector3 targetPosition;
     public Quaternion targetRotation;
     public float yPosition;
@@ -26,7 +25,9 @@ public class EnemyAI : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created   
 
     // allows the toad to chase the player
-    public void directionNorm(float eX, float eZ) {
+    public Vector3 directionNorm(float eX, float eZ, GridManager gridManager, Vector3 Pos) {
+        targetPosition = gridManager.GetNearestPointOnGrid(Pos);
+
         if (Mathf.Abs(eX) > Mathf.Abs(eZ)) // chases the player
             if(eX > 0)
                 direct = _direction.left;
@@ -60,11 +61,14 @@ public class EnemyAI : MonoBehaviour
         }
 
         targetRotation = Quaternion.Euler(0, tiltY, 0);
-        targetPosition.y = yPosition;
+        targetPosition.y = Pos.y;
+        return targetPosition;
     }
 
     // Have the toad run from the player
-    public void directionScatter(float eX, float eZ) {
+    public Vector3 directionScatter(float eX, float eZ, GridManager gridManager, Vector3 Pos) {
+        targetPosition = gridManager.GetNearestPointOnGrid(Pos);
+
         if (Mathf.Abs(eX) > Mathf.Abs(eZ)) // will move away from the player
                 if(eX < 0)
                     direct = _direction.left;
@@ -78,27 +82,42 @@ public class EnemyAI : MonoBehaviour
 
         switch(direct) {
             case _direction.left:
-                tiltY = rotation*2f;
                 targetPosition += Vector3.left * gridManager.gridSize;
                 break;
             case _direction.right:
-                tiltY = rotation*0f;
                 targetPosition += Vector3.right * gridManager.gridSize;
                 break;
             case _direction.forward:
-                tiltY = rotation*1f;
                 targetPosition += Vector3.forward * gridManager.gridSize;
                 break;
             case _direction.back:
-                tiltY = rotation*-1f;
                 targetPosition += Vector3.back * gridManager.gridSize;
                 break;
             default:
                 break;
         }
 
+        targetPosition.y = Pos.y;
+        return targetPosition;
+    }
+
+    public Quaternion getOrientation(Vector3 currentPos, Vector3 nextPos) {
+        Vector3 temp = currentPos - nextPos;
+        if(temp.x != 0) {
+            if(temp.x > 0)
+                tiltY = rotation*2f;
+            else
+                tiltY = rotation*0f;
+        } else {
+            if(temp.z < 0)
+                tiltY = rotation*1f;
+            else
+                tiltY = rotation*-1f;
+        }
+
         targetRotation = Quaternion.Euler(0, tiltY, 0);
-        targetPosition.y = yPosition;
+
+        return targetRotation;
     }
 
     public float getMoveSpeed() {
