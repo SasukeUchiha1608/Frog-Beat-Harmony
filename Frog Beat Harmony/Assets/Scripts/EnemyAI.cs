@@ -124,4 +124,6 @@ public class EnemyAI : MonoBehaviour
         return moveSpeed;
     }
 
+    // script to handle collisions
+
 }

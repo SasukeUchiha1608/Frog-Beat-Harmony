@@ -2,6 +2,15 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+/*
+* Add in a function to manage grid boundries
+* prepare code to generate the tiles randomly
+* check if the vsync works correctly
+* try to savely merge the main and enemy branch together
+* add in the sounds as soon as i can tomorrow
+*/
+
+
 public class EnemyToadSpawner : MonoBehaviour
 {
     // Spawgn area Variables
@@ -47,6 +56,8 @@ public class EnemyToadSpawner : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
+        // hopefully this works
+        QualitySettings.vSyncCount = 1;
         player = Instantiate(player, playerSpawn, Quaternion.identity);
 
         gridManager = FindFirstObjectByType<GridManager>();

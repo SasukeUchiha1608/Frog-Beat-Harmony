@@ -43,7 +43,7 @@ public class Blinky : MonoBehaviour
                 targetPosition = b_directionScatter(eX, eZ);
                 Debug.Log("Scatter mode");
             } else {
-                 b_directionNorm(eX, eZ);
+                targetPosition = b_directionNorm(eX, eZ);
                 Debug.Log("Nominal");
             }
             // Searches for the player and moves closer
