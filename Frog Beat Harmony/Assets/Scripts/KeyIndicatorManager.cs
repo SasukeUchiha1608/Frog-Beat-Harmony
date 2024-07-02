@@ -8,14 +8,9 @@ public class KeyIndicatorManager : MonoBehaviour
     public Transform player;
     public int gridSize = 1;
     private GridManager gridManager;
+    public float indicatorHeight = 1.0f; // Adjust this value as needed to position the indicators above the terrain
 
-    private Dictionary<Vector3, string> keyDirectionMap = new Dictionary<Vector3, string>
-    {
-        { Vector3.forward, "W" },
-        { Vector3.back, "S" },
-        { Vector3.left, "A" },
-        { Vector3.right, "D" }
-    };
+    public Transform canvas;
 
     private List<GameObject> indicators = new List<GameObject>();
 
@@ -26,51 +21,71 @@ public class KeyIndicatorManager : MonoBehaviour
         {
             Debug.LogError("GridManager not found!");
         }
+        CreateKeyIndicators();
         UpdateKeyIndicators();
+    }
+
+    void Update()
+    {
+        UpdateKeyIndicators();
+    }
+
+    private void CreateKeyIndicators()
+    {
+        // Create new indicators
+        Vector3[] directions = { Vector3.forward, Vector3.back, Vector3.left, Vector3.right };
+        string[] keys = { "W", "S", "A", "D" };
+
+        for (int i = 0; i < directions.Length; i++)
+        {
+            GameObject indicator = Instantiate(keyIndicatorPrefab);
+            indicator.transform.SetParent(canvas, false);
+            indicator.transform.localScale = new Vector3(0.1f, 0.1f, 0.1f);
+
+            TextMeshProUGUI tmp = indicator.GetComponent<TextMeshProUGUI>();
+            if (tmp != null)
+            {
+                tmp.text = keys[i];
+                tmp.alignment = TextAlignmentOptions.Center;
+                tmp.fontSize = 9.0f;
+
+                switch (keys[i]) {
+                    case "W":
+                    tmp.color = Color.yellow;
+                    break;
+                    
+                    case "A":
+                    tmp.color = Color.blue;
+                    break;
+                    
+                    case "S":
+                    tmp.color = Color.green;
+                    break;
+
+                    case "D":
+                    tmp.color = Color.red;
+                    break;
+                }
+            }
+            indicators.Add(indicator);
+        }
     }
 
     public void UpdateKeyIndicators()
     {
-        Debug.Log("Updating Key Indicators");
+        Vector3[] directions = { Vector3.forward, Vector3.back, Vector3.left, Vector3.right };
 
-        // Clear previous indicators
-        foreach (GameObject indicator in indicators)
+        for (int i = 0; i < indicators.Count; i++)
         {
-            Destroy(indicator);
-        }
-        indicators.Clear();
-
-        // Create new indicators
-        foreach (KeyValuePair<Vector3, string> entry in keyDirectionMap)
-        {
-            Vector3 direction = entry.Key;
-            string key = entry.Value;
+            Vector3 direction = directions[i];
+            GameObject indicator = indicators[i];
             Vector3 indicatorPosition = player.position + direction * gridSize;
+
             indicatorPosition = gridManager.GetNearestPointOnGrid(indicatorPosition);
+            indicatorPosition.y = player.position.y; // Keep y consistent with player's y
+            indicatorPosition.z = player.position.z + direction.z * gridSize; // Ensure z is adjusted correctly
 
-            Debug.Log($"Creating indicator at {indicatorPosition} with key {key}");
-
-            GameObject indicator = Instantiate(keyIndicatorPrefab, indicatorPosition, Quaternion.identity);
-            if (indicator != null)
-            {
-                TextMeshPro tmp = indicator.GetComponent<TextMeshPro>();
-                if (tmp != null)
-                {
-                    tmp.text = key;
-                    Debug.Log($"TextMeshPro component found and set: {key}");
-                }
-                else
-                {
-                    Debug.LogError("TextMeshPro component not found on keyIndicatorPrefab!");
-                }
-                indicator.transform.SetParent(transform, false); // Set the parent to ensure it is within the canvas
-                indicator.transform.localScale = Vector3.one * 0.1f; // Adjust the scale as needed
-                indicators.Add(indicator);
-            }
-            else
-            {
-                Debug.LogError("Failed to instantiate keyIndicatorPrefab!");
-            }
+            indicator.transform.position = indicatorPosition;
         }
     }
 }

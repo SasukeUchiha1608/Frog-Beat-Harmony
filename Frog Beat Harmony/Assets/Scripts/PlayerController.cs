@@ -5,7 +5,6 @@ public class PlayerController : MonoBehaviour
     public float moveSpeed = 5.0f;
     private GridManager gridManager;
     private Vector3 targetPosition;
-    private float yPosition;
     private KeyIndicatorManager keyIndicatorManager;
 
     void Start()
@@ -22,7 +21,6 @@ public class PlayerController : MonoBehaviour
         }
         targetPosition = gridManager.GetNearestPointOnGrid(transform.position);
         transform.position = targetPosition;
-        yPosition = transform.position.y; // Store the initial Y position
         keyIndicatorManager.UpdateKeyIndicators(); // Add this line to initialize indicators
     }
 
@@ -54,9 +52,6 @@ public class PlayerController : MonoBehaviour
             targetPosition += Vector3.right * gridManager.gridSize;
             moved = true;
         }
-
-        // Ensure the Y coordinate is locked
-        targetPosition.y = yPosition;
 
         transform.position = Vector3.MoveTowards(transform.position, targetPosition, moveSpeed * Time.deltaTime);
 
