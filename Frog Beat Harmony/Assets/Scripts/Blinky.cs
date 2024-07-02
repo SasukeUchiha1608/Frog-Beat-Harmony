@@ -8,12 +8,12 @@ public class Blinky : MonoBehaviour
     private float eZ;
     private Vector3 targetPosition;
     private Quaternion targetRotation;
+    int ID;
 
     private float tempo = 1f;
     private float counterM = 0;
     bool AutoMove = true;
 
-    private EnemyAI enemyAI;
     private EnemyToadSpawner ETS;
     private GridManager gridManager;
 
@@ -24,10 +24,10 @@ public class Blinky : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {   
-        enemyAI = FindFirstObjectByType<EnemyAI>();
         ETS = FindFirstObjectByType<EnemyToadSpawner>();
         gridManager = FindFirstObjectByType<GridManager>();
         player = GameObject.FindGameObjectWithTag("Player");
+        ID = ETS.getID();
     }
 
     // Update is called once per frame
@@ -46,14 +46,20 @@ public class Blinky : MonoBehaviour
                 targetPosition = b_directionNorm(eX, eZ);
                 Debug.Log("Nominal");
             }
+
             // Searches for the player and moves closer
-            // Will need to add in obstical avoidence when we add them in. this will do for now
             /**/
             //targetRotation = b_getOrientation(transform.position, targetPosition);
             
             counterM = 0;
             AutoMove = !AutoMove;
+
+            ETS.updateTarget(ID, targetPosition);
         } else {
+            if(ETS.enemyColide(ID)) {
+                targetPosition = flipDirection();
+                ETS.updateTarget(ID, targetPosition);
+            }
             transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation,  Time.deltaTime * 5f * 2);
             transform.position = Vector3.MoveTowards(transform.position, targetPosition, 5f * Time.deltaTime);
             counterM += Time.deltaTime;
@@ -62,12 +68,38 @@ public class Blinky : MonoBehaviour
         }
     }
 
+    Vector3 flipDirection() {
+        Vector3 temp = transform.position;
+        switch(direct) {
+            case _direction.left:
+                tiltY = rotation*0f;
+                temp += Vector3.right * gridManager.gridSize;
+                break;
+            case _direction.right:
+                tiltY = rotation*2f;
+                temp += Vector3.left * gridManager.gridSize;
+                break;
+            case _direction.forward:
+                tiltY = rotation*-1f;
+                temp += Vector3.back * gridManager.gridSize;
+                break;
+            case _direction.back:
+                tiltY = rotation*1f;
+                temp += Vector3.forward * gridManager.gridSize;
+                break;
+            default:
+                break;
+        }
+        return temp;
+    }
+
     public void TempoUp(float ramp) 
     {
         tempo -= ramp;
     }
 
     /**/ //Bandaid fix. remove later when code works as it should
+    // "later" never came
     // Have the toad run from the player
     Vector3 b_directionNorm(float eX, float eZ) {
         targetPosition = gridManager.GetNearestPointOnGrid(transform.position);

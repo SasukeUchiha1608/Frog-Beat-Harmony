@@ -22,7 +22,7 @@ public class FloatScript : MonoBehaviour
         floatingL = transform.position;
         floatingH.y += .5f;
         floatingL.y -= .5f;
-        Debug.Log("Hellow World");
+        Debug.Log("Hello World");
     }
 
     // Update is called once per frame
@@ -42,9 +42,18 @@ public class FloatScript : MonoBehaviour
             counter += Time.deltaTime;
         } else {
             Debug.Log("I should be dead");
-            //toggle.orbCollected();
             Object.Destroy(this.gameObject);
         }
     }
 
+    // when player triggers orb, make enemies scatter
+    /**
+    void OnTriggerEnter(Collision col) {
+        if(col.CompareTag("Player")) {
+            toggle.orbCollected();
+            
+            Object.Destroy(this.gameObject);
+        }
+    }
+    /**/
 }

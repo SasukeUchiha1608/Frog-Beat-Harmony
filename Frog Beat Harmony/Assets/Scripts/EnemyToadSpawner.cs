@@ -16,10 +16,6 @@ public class EnemyToadSpawner : MonoBehaviour
     // Spawgn area Variables
     public GameObject player;
     public GameObject Toad_Blinky; // chases the player
-    public GameObject Toad_Pinky; // flanks the player
-    public GameObject Toad_Clyde; // chases the player, but scared
-    public GameObject Toad_Buzz; // patrolls a route. follows the player if close, returns to closest node of route if player escapes
-    public GameObject Toad_Clatter; // Always tries to be near the orb
     public GameObject TheHeart;
     public float boardX = 10;
     public float boardZ = 10;
@@ -34,32 +30,41 @@ public class EnemyToadSpawner : MonoBehaviour
     // possiable to make this code spawn in the orbs too?
 
     // Enemy control
-    public int maxEnemies = 3;
+    private Blinky blink;
+    private Vector3[] locations;
+    public int capEnemies = 6;
+    private int maxEnemies = 1;
     private int totalEnemies = 0;
 
     // Spawn timer control
     public float ramp = 0.1f;
     public float spawnTime = 6f;
-    public float scatterTime = 5f;
+    public float scatterTime = 3f;
     public float scatterIntervul = 20f;
+    public float rampIntervul = 10f;
     public float orbCooldown = 10f;
     private float counterSpawn = 0;
     private float counterIntervul = 0;
     private float counterSTime = 0;   
     private float counterOrb = 0;
+    private float counterRamp = 0;
     private bool toadSpawn = false;
     private bool orbSpawn = false;
     private bool orbExists = false;
     private bool scatter;
+
+    private int orbsCollect = 0;
 
     private GridManager gridManager;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
         // hopefully this works
+        locations = new Vector3[6];
         QualitySettings.vSyncCount = 1;
         player = Instantiate(player, playerSpawn, Quaternion.identity);
 
+        blink = FindFirstObjectByType<Blinky>();
         gridManager = FindFirstObjectByType<GridManager>();
         temp.x = Random.Range(spawnXmin, spawnXmax);
         temp.z = Random.Range(spawnZmin, spawnZmax);
@@ -68,15 +73,19 @@ public class EnemyToadSpawner : MonoBehaviour
         temp.y = 1;
         temp = gridManager.GetNearestPointOnGrid(temp);
         Toad_Blinky = Instantiate(Toad_Blinky, temp, Quaternion.identity);
+        locations[0] = temp;
 
-        totalEnemies = 1;
+        totalEnemies += 1;
     }
 
     // Update is called once per frame
     void Update()
     {
+            if(orbsCollect > 6) {
+                Debug.Log("Player Won");
+            }
         // spawn enemies
-        if (totalEnemies < maxEnemies && toadSpawn) {
+        if (totalEnemies < capEnemies && toadSpawn) {
             
             temp.x = Random.Range(spawnXmin, spawnXmax);
             temp.z = Random.Range(spawnZmin, spawnZmax);
@@ -85,7 +94,9 @@ public class EnemyToadSpawner : MonoBehaviour
             temp.y = 1;
             temp = gridManager.GetNearestPointOnGrid(temp);
 
-            Toad_Pinky = Instantiate(Toad_Blinky, temp, Quaternion.identity);
+            Toad_Blinky = Instantiate(Toad_Blinky, temp, Quaternion.identity);
+            locations[totalEnemies] = temp;
+
             totalEnemies += 1;
             counterSpawn = 0;
             toadSpawn = false;
@@ -104,7 +115,7 @@ public class EnemyToadSpawner : MonoBehaviour
             counterSTime += Time.deltaTime;
             if(counterSTime > scatterTime){
                 if(scatterTime > 0)
-                    scatterIntervul -= 1f;
+                    scatterIntervul += 20f;
                 counterIntervul = 0;
                 counterSTime = 0;
                 scatter = false;
@@ -130,17 +141,14 @@ public class EnemyToadSpawner : MonoBehaviour
         }
         /**/
 
-        /**
-        if(dificulty ramp value) 
-        {
-            TempoUp(); //increaces the speed of the enemy toads
-            spawnTime += 0.1f; //minimim spawn rate of the frogs?
-            if (capEnemies < maxEnemies) // raises the total enemies avle to be smawned in
-                capEnemies += 1;
-            spawn in the next toad
-            scatter timer decreased
+        if(counterRamp < rampIntervul) {
+            counterRamp += Time.deltaTime;
+        } else {
+            blink.TempoUp(0.1f);
+            counterRamp = 0;
         }
-        /**/
+
+        
     }
 
     public bool scatterMode() {
@@ -149,22 +157,34 @@ public class EnemyToadSpawner : MonoBehaviour
 
     public void orbCollected() {
         orbExists = false;
-        // scatter = true;
-        
+        scatter = true;
+        orbsCollect += 1;
+        blink.TempoUp(0.3f);
         // set all toads to scatter
         // tick up collection
-    }
-
-    // Updates when an enemy dies
-    public void enemyDown() {
-        totalEnemies -= 1;
     }
 
     public GameObject getPlayer() {
         return player;
     }
 
-    public Vector3 getEnemy() {
-        return temp;
+    public int getID() {
+        return totalEnemies;
     }
+
+    public void updateTarget(int ID, Vector3 nextPos) {
+        locations[ID] = nextPos;
+    }
+
+    public bool enemyColide(int ID) {
+        for(int i = 0; i < 6; i++) {
+            if(i != ID && locations[i] != null)
+                if(locations[ID] == locations[i])
+                    return true;
+        }
+        if(locations[ID].x >= boardX || locations[ID].z >= boardZ)
+            return true;
+        return false;
+    }
+
 }

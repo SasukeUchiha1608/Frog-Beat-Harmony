@@ -12,6 +12,7 @@ public class PlayerController : MonoBehaviour
     private bool invinciable = false;
     private float counter = 0f;
     public float invinciableTimer = 3f;
+    private float flickerCounter = 0f;
 
     void Start()
     {
@@ -23,6 +24,9 @@ public class PlayerController : MonoBehaviour
 
     void Update()
     {
+        if(HP < 0) {
+            Debug.Log("Player is dead");
+        }
         // User Input
         // direction is needed for pinky's AI
         if (Input.GetKeyDown(KeyCode.W))
@@ -57,6 +61,15 @@ public class PlayerController : MonoBehaviour
                 invinciable = false;
                 counter = 0f;
             }
+            /**
+            // comunicate player got hit
+            if(flickerCounter < .2f) {
+                flickerCounter += Time.deltaTime;
+            } else {
+                flickerCounter = 0f;
+                renderer.enabled = !renderer.enabled;
+            }
+            /**/
         } 
 
         // Ensure the Y coordinate is locked
@@ -68,11 +81,15 @@ public class PlayerController : MonoBehaviour
     public int facingDirection() {
         return direction;
     }
+
     /**
-    private void oncollisionenter(collision col){
-        if ((col.tag == "enemy") && !invinciable) {
-            HP -= 1;
-            scatter = true
+    // player got hit
+    void OnTriggerEnter(Collision col) {
+        if(col.CompareTag("Enemy")) {
+            if(!invinciable) {
+                invinciable = true;
+                HP -=1;
+            }
         }
     }
     /**/
