@@ -1,0 +1,18 @@
+fileFormatVersion: 2
+guid: bbce300433b92bb4b9d58e0b2fa96584
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences:
+  - player: {fileID: 7586763104051692682, guid: 27fb9927518dd124bb970c0b94ca0522, type: 3}
+  - Toad_Blinky: {fileID: 9004489152843145092, guid: c50690d5dfc742e4c938ac6e8f967022, type: 3}
+  - Toad_Pinky: {fileID: 9004489152843145092, guid: c50690d5dfc742e4c938ac6e8f967022, type: 3}
+  - Toad_Clyde: {instanceID: 0}
+  - Toad_Buzz: {instanceID: 0}
+  - Toad_Clatter: {instanceID: 0}
+  - TheHeart: {fileID: 8949169384107478486, guid: daf13ee1822889144ba30c4e93e64ea9, type: 3}
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

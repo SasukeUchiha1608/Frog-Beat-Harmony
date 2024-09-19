@@ -118,6 +118,67 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
+--- !u!1 &92370781
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 92370783}
+  - component: {fileID: 92370782}
+  m_Layer: 0
+  m_Name: Spawner
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &92370782
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 92370781}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bbce300433b92bb4b9d58e0b2fa96584, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  player: {fileID: 7586763104051692682, guid: 27fb9927518dd124bb970c0b94ca0522, type: 3}
+  Toad_Blinky: {fileID: 9004489152843145092, guid: c50690d5dfc742e4c938ac6e8f967022, type: 3}
+  TheHeart: {fileID: 8949169384107478486, guid: daf13ee1822889144ba30c4e93e64ea9, type: 3}
+  boardX: 10
+  boardZ: 10
+  spawnXmin: 9
+  spawnZmin: 1
+  spawnXmax: 11
+  spawnZmax: 10
+  playerSpawn: {x: 5, y: 1, z: 5}
+  capEnemies: 6
+  ramp: 0.1
+  spawnTime: 5
+  scatterTime: 5
+  scatterIntervul: 10
+  rampIntervul: 10
+  orbCooldown: 10
+--- !u!4 &92370783
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 92370781}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &330585543
 GameObject:
   m_ObjectHideFlags: 0
@@ -904,6 +965,7 @@ SceneRoots:
   - {fileID: 330585546}
   - {fileID: 410087041}
   - {fileID: 832575519}
-  - {fileID: 423111804}
   - {fileID: 1855222167}
   - {fileID: 1223707975}
+  - {fileID: 92370783}
+  - {fileID: 423111804}
